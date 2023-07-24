@@ -1,0 +1,69 @@
+create table users(
+	id bigint generated always as identity primary key,
+	first_name varchar(50) not null,
+	last_name varchar(50) not null,
+	email text not null,
+	phone_number varchar(13) not null,
+	phone_number_confirmed boolean not null,
+	passport_seria_number varchar(9) not null,
+	password_hash text,
+	salt text,
+	image_path text,
+	last_activity timestamp without time zone default now(),
+	created_at timestamp without time zone default now(),
+	updated_at timestamp without time zone default now()
+);
+
+create table courses(
+	id bigint generated always as identity primary key,
+	image_path text,
+	description text,
+	course_name text not null,
+	instructor_name text,
+	price real ,
+	categories_id bigint references categories(id),
+	created_at timestamp without time zone default now(),
+	updated_at timestamp without time zone default now()
+)
+CREATE TABLE IF NOT EXISTS categories(
+	id bigint generated always as identity primary key,
+	name varchar(50),
+	description text,
+	created_at timestamp without time zone default now(),
+	updated_at timestamp without time zone default now()
+);
+
+create table videos(
+	id bigint generated always as identity primary key,
+	courses_id bigint references courses(id),
+	description text not null,
+	video_path text not null,
+	categories_id bigint references categories(id),
+	created_at timestamp without time zone default now(),
+	updated_at timestamp without time zone default now()
+	
+);
+
+create table orders(
+	id bigint generated always as identity primary key,
+	user_id bigint references users(id),
+	courses_id bigint references courses(id),
+	card_number varchar(20) not null,
+	cardholder_name text not null,
+	expiration_date varchar(4) not null,
+	created_at timestamp without time zone default now()
+);
+
+create table contacts(
+	id bigint generated always as identity primary key,
+	name varchar(50) not null,
+	email text not null,
+	subject text not null,
+	message text not null,
+	users_id bigint references users(id),
+	created_at timestamp without time zone default now(),
+	updated_at timestamp without time zone default now()
+)
+
+SET TIMEZONE TO 'UTC';
+
