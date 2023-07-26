@@ -1,10 +1,5 @@
 ﻿using Dapper;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TimEduIT.DataAccess.Interfaces.Users;
 using TimEduIT.DataAccess.Utils;
 using TimEduIT.DataAccess.ViewModels.Users;
@@ -38,8 +33,8 @@ public class UsersRepository : BaseRepository, IUserRepository
         try
         {
             await _connection.OpenAsync();
-            string query = "INSERT INTO users(\r\n\tid, first_name, last_name, email, phone_number, phone_number_confirmed, passport_seria_number, password_hash, salt, image_path, last_activity, created_at, updated_at) " +
-                "VALUES (@First_name, @Last_name, @Email, @Phone_number, @Phone_number_confirmed, @Passport_seria_number, @Password_hash, @Salt, @Image_path, @Last_activity, @Created_at, @Updated_at); ";
+            string query = "INSERT INTO users(\r\n\tfirst_name, last_name, email, phone_number, phone_number_confirmed, passport_seria_number, identity_role, password_hash, salt, image_path, last_activity, created_at, updated_at) " +
+                "VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @PhoneNumberConfirmed, @PassportSeriaNumber, @IdentityRole, @PasswordHash, @Salt, @ImagePath, @LastActivity, @CreatedAt, UpdatedAt); ";
             return await _connection.ExecuteAsync(query, entity);
         }
         catch
@@ -135,11 +130,30 @@ public class UsersRepository : BaseRepository, IUserRepository
         throw new NotImplementedException();
     }
 
-    
 
-    public Task<int> UpdateAsync(long id, User entity)
+
+    public async Task<int> UpdateAsync(long id, User entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _connection.OpenAsync();
+            string query = "UPDATE users SET first_name = @FirstName, last_name = @LastName, " +
+                "email = @Email, phone_number = @PhoneNumber, phone_number_confirmed = @PhoneNumberConfirmed, " +
+                "passport_seria_number = @PassportSeriaNumber, identity_role = @IdentityRole," +
+                " password_hash = @PasswordHash, salt = @Salt, image_path = @ImagePath, " +
+                "last_activity = @LastActivity, created_at = @CreatedAt, updated_at = @UpdatedAt" +
+                $"WHERE id = {id};";
+            var result = await _connection.ExecuteAsync(query, entity);
+            return result;
+        }
+        catch
+        {
+            return 0;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
+        }
     }
 
     Task<User?> IUserRepository.GetByPhoneAsync(string phoneNumber)

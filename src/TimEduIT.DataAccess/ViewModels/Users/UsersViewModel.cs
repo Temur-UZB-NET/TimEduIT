@@ -8,4 +8,6 @@ namespace TimEduIT.DataAccess.ViewModels.Users;
 
 public class UsersViewModel
 {
+
 }
+

@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimEduIT.Domain.Exceptions.File
+namespace TimEduIT.Domain.Exceptions.File;
+
+public class ImageNotFoundException : NotFoundException
 {
-    internal class FileNotFoundException
+    public ImageNotFoundException()
     {
+        this.TitleMessage = "Image not found!";
     }
 }

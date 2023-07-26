@@ -5,6 +5,6 @@ using TimEduIT.Domain.Entities.Courses;
 
 namespace TimEduIT.DataAccess.Interfaces.Courses;
 
-public interface ICourseRepository : IRepository<Course,CoursesViewModel>,IGetAll<CoursesViewModel>,ISearchable<CoursesViewModel>
+public interface ICourseRepository : IRepository<Course,Course>,IGetAll<CoursesViewModel>,ISearchable<CoursesViewModel>
 {
 }

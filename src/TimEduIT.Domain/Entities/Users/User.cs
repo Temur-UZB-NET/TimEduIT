@@ -18,6 +18,8 @@ public class User : Auditable
     [MaxLength(9)]
     public string PassportSeriaNumber { get; set; } = String.Empty;
 
+    public string IdentityRole { get ; set; } = String.Empty;
+
     public string PasswordHash { get; set; } = String.Empty;
 
     public string Salt { get; set; } = String.Empty;

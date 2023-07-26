@@ -6,10 +6,19 @@ create table users(
 	phone_number varchar(13) not null,
 	phone_number_confirmed boolean not null,
 	passport_seria_number varchar(9) not null,
+	identity_role text,
 	password_hash text,
 	salt text,
 	image_path text,
 	last_activity timestamp without time zone default now(),
+	created_at timestamp without time zone default now(),
+	updated_at timestamp without time zone default now()
+);
+
+CREATE TABLE  categories(
+	id bigint generated always as identity primary key,
+	name varchar(50),
+	description text,
 	created_at timestamp without time zone default now(),
 	updated_at timestamp without time zone default now()
 );
@@ -25,13 +34,7 @@ create table courses(
 	created_at timestamp without time zone default now(),
 	updated_at timestamp without time zone default now()
 )
-CREATE TABLE IF NOT EXISTS categories(
-	id bigint generated always as identity primary key,
-	name varchar(50),
-	description text,
-	created_at timestamp without time zone default now(),
-	updated_at timestamp without time zone default now()
-);
+
 
 create table videos(
 	id bigint generated always as identity primary key,

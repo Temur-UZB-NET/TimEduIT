@@ -24,6 +24,13 @@ namespace TimEduIT.WebApi.Controllers
         public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1)
         => Ok(await _categoryService.GetAllAsync(new PaginationParams(page, maxPageSize)));
 
+        [HttpGet("{categoryId}")]
+        public async Task<IActionResult> GetByIdAsync(long categoryId)  => Ok(await _categoryService.GetByIdAsync(categoryId));
+
+        [HttpGet("count")]
+        public async Task<IActionResult> CountAsync()
+            => Ok(await _categoryService.CountAsync());
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] CategoryCreatDto dto)
@@ -33,6 +40,21 @@ namespace TimEduIT.WebApi.Controllers
             if (result.IsValid) return Ok(await _categoryService.CreateAsync(dto));
             else return BadRequest(result.Errors);
         }
+
+
+
+        [HttpPut("{categoryId}")]
+        public async Task<IActionResult> UpdateAsync(long categoryId, [FromForm] CategoryUpdateDto dto)
+        {
+            var updateValidator = new CategoryUpdateValidator();
+            var validationResult = updateValidator.Validate(dto);
+            if (validationResult.IsValid) return Ok(await _categoryService.UpdateAsync(categoryId, dto));
+            else return BadRequest(validationResult.Errors);
+        }
+
+        [HttpDelete("{categoryId}")]
+        public async Task<IActionResult> DeleteAsync(long categoryId)
+            => Ok(await _categoryService.DeleteAsync(categoryId));
 
     }
 }

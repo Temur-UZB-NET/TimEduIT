@@ -8,5 +8,5 @@ public class CategoryCreatDto
 
     public string Description { get; set; } = String.Empty;
 
-    public IFormFile Image { get; set; } = default!; 
+    //public IFormFile Image { get; set; } = default!; 
 }
