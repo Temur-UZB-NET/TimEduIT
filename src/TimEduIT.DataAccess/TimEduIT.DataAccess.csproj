@@ -7,10 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Videos\" />
     <Folder Include="Repositories\Contacts\" />
     <Folder Include="Repositories\Orders\" />
-    <Folder Include="Repositories\Videos\" />
   </ItemGroup>
 
   <ItemGroup>

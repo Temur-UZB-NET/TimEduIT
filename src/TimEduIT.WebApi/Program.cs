@@ -1,19 +1,23 @@
 using TimEduIT.DataAccess.Interfaces.Categories;
 using TimEduIT.DataAccess.Interfaces.Courses;
 using TimEduIT.DataAccess.Interfaces.Users;
+using TimEduIT.DataAccess.Interfaces.Videos;
 using TimEduIT.DataAccess.Repositories.Categories;
 using TimEduIT.DataAccess.Repositories.Courses;
 using TimEduIT.DataAccess.Repositories.Users;
+using TimEduIT.DataAccess.Repositories.Videos;
 using TimEduIT.Service.Interfaces.Auth;
 using TimEduIT.Service.Interfaces.Categories;
 using TimEduIT.Service.Interfaces.Common;
 using TimEduIT.Service.Interfaces.Courses;
 using TimEduIT.Service.Interfaces.Notification;
+using TimEduIT.Service.Interfaces.Videos;
 using TimEduIT.Service.Service.Auth;
 using TimEduIT.Service.Service.Categories;
 using TimEduIT.Service.Service.Common;
 using TimEduIT.Service.Service.Courses;
 using TimEduIT.Service.Service.Notification;
+using TimEduIT.Service.Service.Videos;
 using TimEduIT.WebApi.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +31,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IVideoService, VideoService>();
 
 
 
@@ -41,8 +46,11 @@ builder.Services.AddSingleton<ISmsSender, SmsSender>();
 
 builder.Services.AddScoped<ICourseRepository,CoursesRepository>();
 builder.Services.AddScoped<ICoursesService, CoursesCervice>();
-
+builder.Services.AddScoped<IVideoProtsesService, VideoProtsesService>();
 builder.Services.AddScoped<IFileService, FileService>();
+
+builder.Services.AddScoped<IVideoRepository, VideosRepository>();
+
 
 builder.ConfigureJwtAuth();
 builder.ConfigureSwaggerAuth();

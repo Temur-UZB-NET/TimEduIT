@@ -106,13 +106,13 @@ public class UsersRepository : BaseRepository, IUserRepository
         }
     }
 
-    public async Task<UsersViewModel?> GetByPhoneAsync(string phone)
+    public async Task<User?> GetByPhoneAsync(string phone)
     {
         try
         {
             await _connection.OpenAsync();
             string query = "SELECT * FROM users where phone_number = @PhoneNumber";
-            var data = await _connection.QuerySingleAsync<UsersViewModel>(query, new { PhoneNumber = phone });
+            var data = await _connection.QuerySingleAsync<User>(query, new { PhoneNumber = phone });
             return data;
         }
         catch
@@ -154,10 +154,5 @@ public class UsersRepository : BaseRepository, IUserRepository
         {
             await _connection.CloseAsync();
         }
-    }
-
-    Task<User?> IUserRepository.GetByPhoneAsync(string phoneNumber)
-    {
-        throw new NotImplementedException();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TimEduIT.Domain.Entities.Videos;
 
-public class Videos : Auditable
+public class VideoModel : Auditable
 {
     public long CoursesId { get; set; }
 

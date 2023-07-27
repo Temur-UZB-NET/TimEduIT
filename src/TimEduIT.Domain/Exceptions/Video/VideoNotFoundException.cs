@@ -1,6 +1,6 @@
 ﻿namespace TimEduIT.Domain.Exceptions.Video;
 
-internal class VideoNotFoundException : NotFoundException
+public class VideoNotFoundException : NotFoundException
 {
     public VideoNotFoundException()
     {

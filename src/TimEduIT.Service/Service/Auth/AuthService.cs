@@ -21,6 +21,7 @@ public class AuthService : IAuthService
     private readonly IMemoryCache _memoryCache;
     private readonly IUserRepository _userRepository;
     private readonly ISmsSender _smsSender;
+    private readonly ITokenService _tokenService;
     private const int CACHED_MINUTES_FOR_REGISTER = 60;
     private const int CACHED_MINUTES_FOR_VERIFICATION = 5;
     private const string REGISTER_CACHE_KEY = "register_";
@@ -29,11 +30,12 @@ public class AuthService : IAuthService
 
     public AuthService(IMemoryCache memoryCache,
         IUserRepository userRepository,
-        ISmsSender smsSender)
+        ISmsSender smsSender, ITokenService tokenService )
     {
         this._memoryCache = memoryCache;
         this._userRepository = userRepository;
         this._smsSender = smsSender;
+        this._tokenService = tokenService;
     }
     public Task<(bool Result, string Token)> LoginAsync(LoginDto loginDto)
     {
@@ -88,14 +90,10 @@ public class AuthService : IAuthService
         else throw new UserCacheDataExpiredException();
     }
 
-    public Task<(bool Result, string Token)> VerifyRegisterAsync(string phone, int code)
-    {
-        throw new NotImplementedException();
-    }
 
-    /*public async Task<(bool Result, string Token)> VerifyRegisterAsync(string phone, int code)
+    public async Task<(bool Result, string Token)> VerifyRegisterAsync(string phone, int code)
     {
-        *//*if (_memoryCache.TryGetValue(REGISTER_CACHE_KEY + phone, out RegisterDto registerDto))
+        if (_memoryCache.TryGetValue(REGISTER_CACHE_KEY + phone, out RegisterDto registerDto))
         {
             if (_memoryCache.TryGetValue(VERIFY_REGISTER_CACHE_KEY + phone, out VerificationDto verificationDto))
             {
@@ -103,8 +101,8 @@ public class AuthService : IAuthService
                     throw new VerificationTooManyRequestsException();
                 else if (verificationDto.Code == code)
                 {
-                    var dbResult = await RegisterToDatabaseAsync(registerDto);
-                    if (dbResult is true)
+                    var dbResult = await RegisterAsync(registerDto);
+                    if (dbResult.Result)
                     {
                         var user = await _userRepository.GetByPhoneAsync(phone);
                         string token = _tokenService.GenerateToken(user);
@@ -121,8 +119,8 @@ public class AuthService : IAuthService
                     return (Result: false, Token: "");
                 }
             }
-            else throw new VerificationCodeExpiredException();
+            else  throw new VerificationCodeExpiredException();
         }
-        else throw new UserCacheDataExpiredException();*//*
-    }*/
+        else throw new UserCacheDataExpiredException();
+    }
 }
