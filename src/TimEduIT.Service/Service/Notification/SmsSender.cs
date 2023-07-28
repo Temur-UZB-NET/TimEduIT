@@ -55,8 +55,8 @@ public class SmsSender : ISmsSender
 
     public async Task<bool> SendsmsAsync(SmsMessage smsMessage)
     {
-        //var num = smsMessage.Recipent.Substring(1);
-        //smsMessage.Recipent = num;
+        var num = smsMessage.Recipent.Substring(1);
+        smsMessage.Recipent = num;
         var client = new HttpClient();
         client.BaseAddress = new Uri(BASE_URL);
         var request = new HttpRequestMessage(HttpMethod.Post, "api/message/sms/send");

@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimEduIT.Service.Common.Helpers;
 using TimEduIT.Service.Interfaces.Common;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TimEduIT.Service.Service.Common;
 
@@ -16,7 +18,12 @@ public class VideoProtsesService : IVideoProtsesService
 {
     private readonly IConfiguration configuration;
     private StorageClient _storageClient;
-    private string bucketName = "TimEduIT";
+    private string bucketName = "course_zone";
+
+    private readonly string MEDIA = "media";
+    private readonly string VIDEOS = "videos";
+    private readonly string AVATARS = "avatars";
+    private readonly string ROOTPATH;
 
     public VideoProtsesService(IConfiguration configuration)
     {
@@ -37,10 +44,14 @@ public class VideoProtsesService : IVideoProtsesService
 
     public async Task<string?> VideoUploadAsync(IFormFile video)
     {
-        string objectName = MediaHelper.MakeVideoName(video.FileName);
 
         using (var memoryStream = new MemoryStream())
         {
+           
+            string objectName = MediaHelper.MakeVideoName(video.FileName);
+            string subpath = Path.Combine(MEDIA, VIDEOS, objectName);
+            string path = Path.Combine(ROOTPATH, subpath);
+
             await video.CopyToAsync(memoryStream);
             memoryStream.Position = 0;
             var storageObject = await _storageClient.UploadObjectAsync(bucketName, objectName, null, memoryStream);

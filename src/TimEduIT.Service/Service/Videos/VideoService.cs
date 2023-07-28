@@ -40,6 +40,8 @@ public class VideoService : IVideoService
     public async Task<bool> CreateAsync(VideoCreateDto dto)
     {
         string videoPath = await _videoService.VideoUploadAsync(dto.Video)!;
+        //if (videoPath == null) throw new VideoNotFoundException();
+        
         string imagePath = await _fileService.UploadImageAsync(dto.Image);
         var video = new VideoModel()
         {

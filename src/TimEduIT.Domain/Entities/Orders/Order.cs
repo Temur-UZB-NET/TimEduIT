@@ -1,6 +1,6 @@
 ﻿namespace TimEduIT.Domain.Entities.Orders;
 
-public class Order : Auditable
+public class Order : BaseEntity
 {
     public long UserId { get; set; }
 
@@ -11,4 +11,6 @@ public class Order : Auditable
     public string CardholderName { get; set; }
 
     public string ExpirationDate { get; set; }
+
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

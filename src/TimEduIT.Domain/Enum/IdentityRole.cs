@@ -1,6 +1,6 @@
-﻿namespace TimEduIT.Domain.Enum
+﻿namespace TimEduIT.Domain.Enum;
+
+public enum IdentityRole
 {
-    internal class IdentityRole
-    {
-    }
+    Admin=1, User=0
 }

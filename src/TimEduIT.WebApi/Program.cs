@@ -18,6 +18,7 @@ using TimEduIT.Service.Service.Common;
 using TimEduIT.Service.Service.Courses;
 using TimEduIT.Service.Service.Notification;
 using TimEduIT.Service.Service.Videos;
+using TimEduIT.Service.Services.Auth;
 using TimEduIT.WebApi.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);

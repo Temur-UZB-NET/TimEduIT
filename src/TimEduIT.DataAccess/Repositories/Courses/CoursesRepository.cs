@@ -118,9 +118,9 @@ public class CoursesRepository : BaseRepository, ICourseRepository
         try
         {
             await _connection.OpenAsync();
-            string query = $"UPDATE courses SET image_path = @Image_path, description = @Description, course_name = @Course_name, " +
-                $"instructor_name = @Instructor_name, price = @Price, categories_id = @Categories_id, " +
-                $"created_at = @Created_at, updated_at = @Updated_at" +
+            string query = $"UPDATE courses SET image_path = @ImagePath, description = @Description, course_name = @CourseName, " +
+                $"instructor_name = @InstructorName, price = @Price, categories_id = @CategoriesId, " +
+                $"created_at = @CreatedAt, updated_at = @UpdatedAt " +
                 $"WHERE id={id};";
 
             var result = await _connection.ExecuteAsync(query, entity);

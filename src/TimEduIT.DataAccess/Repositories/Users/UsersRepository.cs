@@ -33,8 +33,8 @@ public class UsersRepository : BaseRepository, IUserRepository
         try
         {
             await _connection.OpenAsync();
-            string query = "INSERT INTO users(\r\n\tfirst_name, last_name, email, phone_number, phone_number_confirmed, passport_seria_number, identity_role, password_hash, salt, image_path, last_activity, created_at, updated_at) " +
-                "VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @PhoneNumberConfirmed, @PassportSeriaNumber, @IdentityRole, @PasswordHash, @Salt, @ImagePath, @LastActivity, @CreatedAt, UpdatedAt); ";
+            string query = "INSERT INTO users( first_name, last_name,  phone_number, phone_number_confirmed, passport_seria_number, identity_role, password_hash, salt, image_path, last_activity, created_at, updated_at) " +
+                "VALUES (@FirstName, @LastName, @PhoneNumber, @PhoneNumberConfirmed, @PassportSeriaNumber, @IdentityRole, @PasswordHash, @Salt, @ImagePath, @LastActivity, @CreatedAt, @UpdatedAt); ";
             return await _connection.ExecuteAsync(query, entity);
         }
         catch

@@ -1,20 +1,18 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using TimEduIT.DataAccess.Interfaces.Users;
+using TimEduIT.Domain.Entities.Users;
 using TimEduIT.Domain.Exceptions.Auth;
 using TimEduIT.Domain.Exceptions.Users;
 using TimEduIT.Service.Common.Helpers;
+using TimEduIT.Service.Common.Security;
 using TimEduIT.Service.Dtos.Auth;
 using TimEduIT.Service.Dtos.Notification;
 using TimEduIT.Service.Dtos.Security;
 using TimEduIT.Service.Interfaces.Auth;
 using TimEduIT.Service.Interfaces.Notification;
 
-namespace TimEduIT.Service.Service.Auth;
+namespace TimEduIT.Service.Services.Auth;
 
 public class AuthService : IAuthService
 {
@@ -27,21 +25,18 @@ public class AuthService : IAuthService
     private const string REGISTER_CACHE_KEY = "register_";
     private const string VERIFY_REGISTER_CACHE_KEY = "verify_register_";
     private const int VERIFICATION_MAXIMUM_ATTEMPTS = 3;
-
     public AuthService(IMemoryCache memoryCache,
         IUserRepository userRepository,
-        ISmsSender smsSender, ITokenService tokenService )
+        ISmsSender smsSender,
+        ITokenService tokenService)
     {
         this._memoryCache = memoryCache;
         this._userRepository = userRepository;
         this._smsSender = smsSender;
         this._tokenService = tokenService;
     }
-    public Task<(bool Result, string Token)> LoginAsync(LoginDto loginDto)
-    {
-        throw new NotImplementedException();
-    }
 
+#pragma warning disable
     public async Task<(bool Result, int CachedMinutes)> RegisterAsync(RegisterDto dto)
     {
         var user = await _userRepository.GetByPhoneAsync(dto.PhoneNumber);
@@ -51,7 +46,7 @@ public class AuthService : IAuthService
         if (_memoryCache.TryGetValue(REGISTER_CACHE_KEY + dto.PhoneNumber, out RegisterDto cachedRegisterDto))
         {
             cachedRegisterDto.FirstName = cachedRegisterDto.FirstName;
-            _memoryCache.Remove(dto.PhoneNumber);
+            _memoryCache.Remove(REGISTER_CACHE_KEY + dto.PhoneNumber);
         }
         else _memoryCache.Set(REGISTER_CACHE_KEY + dto.PhoneNumber, dto,
             TimeSpan.FromMinutes(CACHED_MINUTES_FOR_REGISTER));
@@ -79,7 +74,7 @@ public class AuthService : IAuthService
                 TimeSpan.FromMinutes(CACHED_MINUTES_FOR_VERIFICATION));
 
             SmsMessage smsMessage = new SmsMessage();
-            smsMessage.Title = "Tim Edu IT";
+            smsMessage.Title = "Agile Shop";
             smsMessage.Content = "Your verification code : " + verificationDto.Code;
             smsMessage.Recipent = phone.Substring(1);
 
@@ -89,7 +84,6 @@ public class AuthService : IAuthService
         }
         else throw new UserCacheDataExpiredException();
     }
-
 
     public async Task<(bool Result, string Token)> VerifyRegisterAsync(string phone, int code)
     {
@@ -101,8 +95,8 @@ public class AuthService : IAuthService
                     throw new VerificationTooManyRequestsException();
                 else if (verificationDto.Code == code)
                 {
-                    var dbResult = await RegisterAsync(registerDto);
-                    if (dbResult.Result)
+                    var dbResult = await RegisterToDatabaseAsync(registerDto);
+                    if (dbResult is true)
                     {
                         var user = await _userRepository.GetByPhoneAsync(phone);
                         string token = _tokenService.GenerateToken(user);
@@ -119,8 +113,39 @@ public class AuthService : IAuthService
                     return (Result: false, Token: "");
                 }
             }
-            else  throw new VerificationCodeExpiredException();
+            else throw new VerificationCodeExpiredException();
         }
         else throw new UserCacheDataExpiredException();
+    }
+
+    private async Task<bool> RegisterToDatabaseAsync(RegisterDto registerDto)
+    {
+        var user = new User();
+        user.FirstName = registerDto.FirstName;
+        user.LastName = registerDto.LastName;
+        user.PhoneNumber = registerDto.PhoneNumber;
+        user.PhoneNumberConfirmed = true;
+
+        var hasherResult = PasswordHasher.Hash(registerDto.Password);
+        user.PasswordHash = hasherResult.Hash;
+        user.Salt = hasherResult.Salt;
+
+        user.CreatedAt = user.UpdatedAt = user.LastActivity = TimeHelper.GetDateTime();
+        user.IdentityRole = "User";
+
+        var dbResult = await _userRepository.CreateAsync(user);
+        return dbResult > 0;
+    }
+
+    public async Task<(bool Result, string Token)> LoginAsync(LoginDto loginDto)
+    {
+        var user = await _userRepository.GetByPhoneAsync(loginDto.PhoneNumber);
+        if (user is null) throw new UsersNotFoundException();
+
+        var hasherResult = PasswordHasher.Verify(loginDto.Password, user.PasswordHash, user.Salt);
+        if (hasherResult == false) throw new PasswordNotMatchException();
+
+        string token = _tokenService.GenerateToken(user);
+        return (Result: true, Token: token);
     }
 }

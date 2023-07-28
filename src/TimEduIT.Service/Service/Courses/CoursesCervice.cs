@@ -72,7 +72,7 @@ public class CoursesCervice :BaseRepository, ICoursesService
         if (dto.Image is not null)
         {
             var deleteResult = await _fileService.DeleteImageAsync(course.ImagePath);
-            if (deleteResult is false) throw new ImageNotFoundException();
+            //if (deleteResult is false) throw new ImageNotFoundException();
 
             string newImagePath = await _fileService.UploadImageAsync(dto.Image);
 
