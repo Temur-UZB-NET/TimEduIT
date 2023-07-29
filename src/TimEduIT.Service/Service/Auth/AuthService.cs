@@ -74,7 +74,7 @@ public class AuthService : IAuthService
                 TimeSpan.FromMinutes(CACHED_MINUTES_FOR_VERIFICATION));
 
             SmsMessage smsMessage = new SmsMessage();
-            smsMessage.Title = "Agile Shop";
+            smsMessage.Title = "TimeEdiT";
             smsMessage.Content = "Your verification code : " + verificationDto.Code;
             smsMessage.Recipent = phone.Substring(1);
 

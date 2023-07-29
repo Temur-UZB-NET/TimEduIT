@@ -111,8 +111,8 @@ public class UsersRepository : BaseRepository, IUserRepository
         try
         {
             await _connection.OpenAsync();
-            string query = "SELECT * FROM users where phone_number = @PhoneNumber";
-            var data = await _connection.QuerySingleAsync<User>(query, new { PhoneNumber = phone });
+            string query = $"SELECT * FROM users where phone_number = '{phone}' ;";
+            var data = await _connection.QuerySingleAsync<User>(query);
             return data;
         }
         catch
@@ -156,3 +156,4 @@ public class UsersRepository : BaseRepository, IUserRepository
         }
     }
 }
+ 

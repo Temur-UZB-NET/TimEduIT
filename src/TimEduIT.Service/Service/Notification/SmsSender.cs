@@ -19,19 +19,12 @@ public class SmsSender : ISmsSender
     private readonly string EMAIL = "";
     private readonly string PASSWORD = "";
     private string TOKEN = "";
-
-    /*private readonly string BASE_URL = "";
-    private readonly string API_KEY = "";
-    private readonly string SENDER = "";
-    private readonly string EMAIL = "";
-    private readonly string PASSWORD = "";
-    private string TOKEN = "";*/
     public SmsSender(IConfiguration config)
     {
-        BASE_URL = "https://notify.eskiz.uz"!;
-        SENDER = "4546"!;
-        EMAIL = "able.devops@gmail.com"!;
-        PASSWORD = "3nUhur3fB9hiFZZAbBAHJ5fRaik0oTsamS8w6En9"!;
+        BASE_URL = config["Sms:BaseURL"]!;
+        SENDER = config["Sms:Sender"]!;
+        EMAIL = config["Sms:Email"]!;
+        PASSWORD = config["Sms:Password"]!;
     }
 
     private async Task LoginAsync()
@@ -55,8 +48,6 @@ public class SmsSender : ISmsSender
 
     public async Task<bool> SendsmsAsync(SmsMessage smsMessage)
     {
-        var num = smsMessage.Recipent.Substring(1);
-        smsMessage.Recipent = num;
         var client = new HttpClient();
         client.BaseAddress = new Uri(BASE_URL);
         var request = new HttpRequestMessage(HttpMethod.Post, "api/message/sms/send");
@@ -77,12 +68,7 @@ public class SmsSender : ISmsSender
         }
         else if (response.IsSuccessStatusCode) return true;
         else return false;
-
     }
-
-
-
-
 
     public class EskizLoginDto
     {

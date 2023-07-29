@@ -7,5 +7,5 @@ namespace TimEduIT.DataAccess.Interfaces.Users;
 
 public interface IUserRepository : IRepository<User, UsersViewModel>, IGetAll<UsersViewModel>, ISearchable<UsersViewModel>
 {
-    public Task<User?> GetByPhoneAsync(string phoneNumber);
+    public Task<User?> GetByPhoneAsync(string phone);
 }
